@@ -25,90 +25,129 @@
  */
 
 import React from 'react'
-import { mountWithTheme, renderWithTheme } from '@looker/components-test-utils'
+import { fireEvent } from '@testing-library/react'
+import { createWithTheme, renderWithTheme } from '@looker/components-test-utils'
 import { FieldSelectMulti } from './FieldSelectMulti'
 
-const FieldSelectMultiOptions = [
-  { label: 'Apples', value: '1' },
-  { label: 'Bananas', value: '2' },
-  { label: 'Oranges', value: '3' },
-]
-
-test('FieldSelectMulti should accept detail and description attributes', () => {
-  const { getByLabelText } = renderWithTheme(
+test('FieldSelectMulti supports labelWeight', () => {
+  const { getByText } = renderWithTheme(
     <FieldSelectMulti
-      detail="5/50"
-      description="this is the description"
-      label="👍"
+      label="Label"
       name="thumbsUp"
       id="thumbs-up"
-      options={FieldSelectMultiOptions}
+      labelFontWeight="normal"
     />
   )
-
-  const input = getByLabelText('👍')
-  expect(input.getAttribute('detail')).toBeDefined()
-  expect(input.getAttribute('description')).toBeDefined()
+  const label = getByText('Label')
+  expect(label).toHaveStyleRule('font-weight', '400')
 })
 
-test('FieldSelectMulti should accept a disabled prop', () => {
-  const { getByLabelText } = renderWithTheme(
-    <FieldSelectMulti
-      disabled
-      id="test"
-      label="Test Label"
-      name="test"
-      options={FieldSelectMultiOptions}
-    />
-  )
-
-  const input = getByLabelText('Test Label')
-  expect(input.getAttribute('disabled')).toBeDefined()
-})
-
-test('FieldSelectMulti should accept required attributes', () => {
+test('Should accept a value', () => {
   const { getByText } = renderWithTheme(
     <FieldSelectMulti
       label="👍"
       name="thumbsUp"
       id="thumbs-up"
-      options={FieldSelectMultiOptions}
-      required
+      values={['foobar']}
+      options={[{ label: 'Foobar', value: 'foobar' }]}
     />
   )
-  expect(getByText('required')).toBeVisible()
+
+  const chip = getByText('Foobar')
+  expect(chip).toBeInTheDocument()
 })
 
-test('FieldSelectMulti should display error message', () => {
+test('Should trigger onChange handler', () => {
+  const handleChange = jest.fn()
+
+  const { getByRole } = renderWithTheme(
+    <FieldSelectMulti
+      label="👍"
+      name="thumbsUp"
+      id="thumbs-up"
+      values={['foobar']}
+      onChange={handleChange}
+      options={[{ label: 'Foobar', value: 'foobar' }]}
+      closeOnSelect
+    />
+  )
+
+  const input = getByRole('textbox')
+  fireEvent.click(input) // open option list
+
+  const option = getByRole('option')
+  fireEvent.click(option) // click first option
+  expect(handleChange).toHaveBeenCalledTimes(1)
+})
+
+test('A required FieldSelectMulti', () => {
+  const component = createWithTheme(
+    <FieldSelectMulti label="👍" name="thumbsUp" id="thumbs-up" required />
+  )
+  const tree = component.toJSON()
+  expect(tree).toMatchSnapshot()
+})
+
+test('A FieldSelectMulti with an error validation aligned to the bottom', () => {
+  const { getByLabelText, getByText } = renderWithTheme(
+    <FieldSelectMulti
+      label="thumbs up"
+      name="thumbsUp"
+      id="thumbs-up"
+      validationMessage={{ message: 'This is an error', type: 'error' }}
+    />
+  )
+  expect(getByLabelText('thumbs up')).toBeVisible()
+  expect(getByText('This is an error')).toBeVisible()
+})
+
+test('A FieldSelectMulti with description has proper aria setup', () => {
+  const description = 'This is a description'
+
+  const { container, getByRole } = renderWithTheme(
+    <FieldSelectMulti
+      id="test"
+      defaultValues={['example']}
+      description={description}
+    />
+  )
+
+  const input = getByRole('input')
+  const id = input.getAttribute('aria-describedby')
+  expect(id).toBeDefined()
+
+  const describedBy = container.querySelector(`#${id}`)
+  expect(describedBy).toHaveTextContent(description)
+})
+
+test('A FieldText with error has proper aria setup', () => {
   const errorMessage = 'This is an error'
 
-  const { getByText } = renderWithTheme(
+  const { container, getByDisplayValue } = renderWithTheme(
     <FieldSelectMulti
-      id="testFieldSelectMulti"
-      label="Label"
-      name="test"
-      options={FieldSelectMultiOptions}
+      id="test"
+      defaultValues={['example']}
       validationMessage={{ message: errorMessage, type: 'error' }}
     />
   )
 
-  expect(getByText('This is an error')).toBeVisible()
+  const input = getByDisplayValue('example')
+  const id = input.getAttribute('aria-describedby')
+  expect(id).toBeDefined()
+
+  const describedBy = container.querySelector(`#${id}`)
+  expect(describedBy).toHaveTextContent(errorMessage)
 })
 
-test('FieldSelectMulti Should trigger onChange handler', () => {
-  const handleChange = jest.fn()
-
-  const wrapper = mountWithTheme(
+test('A FieldSelectMulti with an error validation aligned to the right', () => {
+  const component = createWithTheme(
     <FieldSelectMulti
       label="👍"
       name="thumbsUp"
       id="thumbs-up"
-      onChange={handleChange}
-      options={FieldSelectMultiOptions}
+      validationMessage={{ message: 'This is an error', type: 'error' }}
     />
   )
-
-  wrapper.find('input').simulate('mousedown')
-  wrapper.find('li').at(0).simulate('click')
-  expect(handleChange).toHaveBeenCalledTimes(1)
+  const tree = component.toJSON()
+  expect(tree).toMatchSnapshot()
 })

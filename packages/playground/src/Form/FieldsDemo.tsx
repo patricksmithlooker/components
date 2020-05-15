@@ -28,6 +28,7 @@ import {
   FieldText,
   FieldTextArea,
   FieldSelect,
+  FieldSelectMulti,
   FieldCheckbox,
   FieldRadio,
   FieldToggleSwitch,
@@ -148,7 +149,49 @@ export const FieldsDemo: FC = () => {
         />
         <FieldSelect
           inline
-          label="Label"
+          label="SelectMulti Inline"
+          placeholder="placeholder"
+          description="I'm a little teapot"
+          detail="0/50"
+          options={[
+            { label: 'Cheddar', value: 'cheddar' },
+            { label: 'Gouda', value: 'gouda' },
+            { label: 'Swiss', value: 'swiss' },
+          ]}
+          validationMessage={{ message: 'validation Message', type: 'error' }}
+        />
+        <FieldSelectMulti
+          label="SelectMulti"
+          placeholder="placeholder"
+          options={[
+            { label: 'Cheddar', value: 'cheddar' },
+            { label: 'Gouda', value: 'gouda' },
+            { label: 'Swiss', value: 'swiss' },
+          ]}
+        />
+        <FieldSelectMulti
+          inline
+          label="SelectMulti Inline"
+          placeholder="placeholder"
+          options={[
+            { label: 'Cheddar', value: 'cheddar' },
+            { label: 'Gouda', value: 'gouda' },
+            { label: 'Swiss', value: 'swiss' },
+          ]}
+        />
+        <FieldSelectMulti
+          label="SelectMulti Error"
+          placeholder="placeholder"
+          options={[
+            { label: 'Cheddar', value: 'cheddar' },
+            { label: 'Gouda', value: 'gouda' },
+            { label: 'Swiss', value: 'swiss' },
+          ]}
+          validationMessage={{ message: 'validation Message', type: 'error' }}
+        />
+        <FieldSelectMulti
+          inline
+          label="SelectMulti Inline Error"
           placeholder="placeholder"
           description="I'm a little teapot"
           detail="0/50"
