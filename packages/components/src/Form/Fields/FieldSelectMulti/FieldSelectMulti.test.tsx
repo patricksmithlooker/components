@@ -112,7 +112,7 @@ test('A FieldSelectMulti with description has proper aria setup', () => {
     />
   )
 
-  const input = getByRole('input')
+  const input = getByRole('textbox')
   const id = input.getAttribute('aria-describedby')
   expect(id).toBeDefined()
 
@@ -123,7 +123,7 @@ test('A FieldSelectMulti with description has proper aria setup', () => {
 test('A FieldText with error has proper aria setup', () => {
   const errorMessage = 'This is an error'
 
-  const { container, getByDisplayValue } = renderWithTheme(
+  const { container, getByRole } = renderWithTheme(
     <FieldSelectMulti
       id="test"
       defaultValues={['example']}
@@ -131,7 +131,7 @@ test('A FieldText with error has proper aria setup', () => {
     />
   )
 
-  const input = getByDisplayValue('example')
+  const input = getByRole('textbox')
   const id = input.getAttribute('aria-describedby')
   expect(id).toBeDefined()
 
