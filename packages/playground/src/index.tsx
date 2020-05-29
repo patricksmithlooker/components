@@ -33,7 +33,7 @@ const App: FC = () => {
       <Status intent="critical" />
       <Status intent="inform" />
       <Status intent="neutral" />
-      <Status intent="success" />
+      <Status intent="positive" />
       <Status intent="warning" />
     </ComponentsProvider>
   )
