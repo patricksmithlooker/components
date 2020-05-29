@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- updates on `Banner` now `MessageBar`
+- `Banner` is now `MessageBar`
+  - Major style changes to be more Material-esque
 - `CheckboxGroup` and `RadioGroup` `name` is now optional
 - Updated `LookerLogo` and `LogoRings` to match new branding
 
